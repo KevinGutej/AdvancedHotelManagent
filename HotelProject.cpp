@@ -82,7 +82,7 @@ void printAvaiableRooms(int roomSize, RoomList listOfRooms)
 		for(i=0; i < 10; i++)
 		{
 			cout << "Room Number: " << listOfRooms.singleRooms[i].roomNumber << endl;
-			cout << "Price: " << listOfRooms.singleRooms[i].price << endl;
+			cout << "Price: " << listOfRooms.singleRooms[i].price << "$" << endl;
 			cout << "Room Size: " << listOfRooms.singleRooms[i].roomSize << endl;
 			if(listOfRooms.singleRooms[i].clients[0].firstName != "")
 			{
@@ -101,7 +101,7 @@ void printAvaiableRooms(int roomSize, RoomList listOfRooms)
 		for(i=0; i < 6; i++)
 		{
 			cout << "Room Number: " << listOfRooms.doubleRooms[i].roomNumber << endl;
-			cout << "Price: " << listOfRooms.doubleRooms[i].price << endl;
+			cout << "Price: " << listOfRooms.doubleRooms[i].price << "$" << endl;
 			cout << "Room Size: " << listOfRooms.doubleRooms[i].roomSize << endl;
 			if(listOfRooms.doubleRooms[i].clients[0].firstName != "")
 			{
@@ -119,7 +119,7 @@ void printAvaiableRooms(int roomSize, RoomList listOfRooms)
 		for(i=0; i < 3; i++)
 		{
 			cout << "Room Number: " << listOfRooms.tripleRooms[i].roomNumber << endl;
-			cout << "Price: " << listOfRooms.tripleRooms[i].price << endl;
+			cout << "Price: " << listOfRooms.tripleRooms[i].price << "$" << endl;
 			cout << "Room Size: " << listOfRooms.tripleRooms[i].roomSize << endl;
 			if(listOfRooms.tripleRooms[i].clients[0].firstName != "")
 			{
@@ -197,12 +197,18 @@ void roomBookingMenu(RoomList listOfRooms)
 {
 	int roomSize;
 	int roomNumber;
+	int i,j;
+	int pin;
 	do
 	{
 		cout << "What room size would you like(1,2,3): " << endl;
 		cin >> roomSize;
+		
+		
 		printAvaiableRooms(roomSize,listOfRooms);
 	}while(roomSize > 3 || roomSize < 0);
+	
+	
 	
 	do
 	{
@@ -210,6 +216,80 @@ void roomBookingMenu(RoomList listOfRooms)
 		cin >> roomNumber;
 	}
 	while(checkIfRoomNumberIsAvailable(roomNumber, listOfRooms) == false);
+	
+	for(i=0; i < roomSize; i++)
+	{
+		Client clientDetail = getClientDetail();
+		for(j=0; j < 10; j++)
+		{
+			if(listOfRooms.singleRooms[j].roomNumber == roomNumber)
+			{
+				listOfRooms.singleRooms[j].clients[i] = clientDetail;
+				pin = listOfRooms.singleRooms[j].pin;
+			}		
+		}
+		
+		for(j=0; j < 6; j++)
+		{
+			if(listOfRooms.doubleRooms[j].roomNumber == roomNumber)
+			{
+				listOfRooms.doubleRooms[j].clients[i] = clientDetail;
+				pin = listOfRooms.doubleRooms[j].pin;
+			}		
+		}
+		
+		
+		for(j=0; j < 3; j++)
+		{
+			if(listOfRooms.tripleRooms[j].roomNumber == roomNumber)
+			{
+				listOfRooms.tripleRooms[j].clients[i] = clientDetail;
+				pin = listOfRooms.tripleRooms[j].pin;
+			}		
+		}	
+	}
+	cout << "Use this pin to enter your room: " << pin << endl;
+}
+
+void chooseActivity()
+{
+	int activityOption;
+	
+	
+	
+	do{
+		cout << "Please choose a activity " << endl;
+		cout << "[1] - Order food" << endl;
+		cout << "[2] - Go to water park" << endl;
+		cout << "[3] - Book a VIP area" << endl;
+		cout << "[4] - Book a transport" << endl;
+		cout << "[5] - Check out" << endl;
+	
+		cin >> activityOption;
+		
+		switch(activityOption)
+		{
+			case 1:
+			break;
+			
+			case 2:
+			break;
+			
+			case 3:
+			break;
+			
+			case 4:
+			break;
+			
+			case 5:
+			break;
+			
+			default:
+			cout << "Incorrect activity" << endl;	
+		}	
+		
+	}while(activityOption > 5 || activityOption < 1);
+	
 	
 }
 
@@ -227,11 +307,6 @@ int main()
 	listOfRooms.singleRooms[0] = firstSingleRoom;
 	listOfRooms.doubleRooms[0] = firstDoubleRoom;
 	listOfRooms.tripleRooms[0] = firstTripleRoom;
-	
-	
-	
-	//Client firstClient = getClientDetail();
-	//display(firstClient);
 	
 	roomBookingMenu(listOfRooms);
 	
