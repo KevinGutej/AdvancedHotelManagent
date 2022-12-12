@@ -251,7 +251,148 @@ void roomBookingMenu(RoomList listOfRooms)
 	cout << "Use this pin to enter your room: " << pin << endl;
 }
 
-void chooseActivity()
+void orderDrink(Client* clientPtr)
+{
+	string drinkChoice;
+	
+	do{
+		cout << "Drink options: (CocaCola, Fanta, Sprite, Water, Coffee, Slushy)" << endl;
+		cout << "Please enter drink choice: " << endl;
+		cin >> drinkChoice;
+		
+		if(drinkChoice == "CocaCola")
+		{
+			cout << "You have chosen CocaCola" << endl;
+			(*clientPtr).dept += 3;
+		}
+		else if(drinkChoice == "Fanta")
+		{
+			cout << "You have chosen Fanta" << endl;
+			(*clientPtr).dept += 3;
+		}
+		else if(drinkChoice == "Sprite")
+		{
+			cout << "You have chosen Sprite" << endl;
+			(*clientPtr).dept += 3;
+		}
+		else if(drinkChoice == "Water")
+		{
+			cout << "You have chosen Water" << endl;
+			(*clientPtr).dept += 2;
+		}
+		else if(drinkChoice == "Coffee")
+		{
+			cout << "You have chosen Coffee" << endl;
+			(*clientPtr).dept += 4;
+		}
+		else if(drinkChoice == "Slushy")
+		{
+			cout << "You have chosen Slushy" << endl;
+			(*clientPtr).dept += 4;
+		}
+		else{
+			drinkChoice = "Incorrect";
+		}
+		
+	}while(drinkChoice == "Incorrect");
+}
+
+void orderDessert()
+{
+	
+}
+
+void restaurantMenu(Client* clientPtr)
+{
+	int restaurantOption;
+	bool isMainCourseOrdered = false;
+	bool isDrinkOrdered = false;
+	bool isDessertOrdered = false;
+	
+	do{
+		cout << "Please choose what you would like to order from the menu: " << endl;
+	    cout << "Drink options: (Coca-Cola, Fanta, Sprite, Water, Coffee, Slushy)" << endl;
+	    cout << "Dessert options: (Ice-cream, FrozenHotChocolate, Flapjack, Pankaces)" << endl;
+	    
+	    if(isMainCourseOrdered == false)
+	    {
+	    	cout << "[1] - Pizza" << endl;
+		    cout << "[2] - Buger" << endl;
+		    cout << "[3] - Fries" << endl;
+		}
+	    
+	    if(isDrinkOrdered == false)
+	    {
+	    	cout << "[4] - Drink: " << endl;
+		}
+	    
+	    if(isDessertOrdered == false)
+	    {
+	    	cout << "[5] - Dessert: " << endl;
+		}
+		
+	    cout << "[6] - Leave restaurant" << endl;
+	    cin >> restaurantOption;
+	    
+	    
+		switch(restaurantOption)
+		{
+			case 1:
+				cout << "You have ordered pizza" << endl;
+				(*clientPtr).dept += 20;
+				break;
+				
+			case 2:
+				cout << "You have ordered burger" << endl;
+				(*clientPtr).dept += 12;
+				break;
+				
+			case 3:
+				cout << "You have ordered fries" << endl;
+				(*clientPtr).dept += 5;
+				break;
+				
+			case 4:
+				orderDrink(clientPtr);
+				break;
+				
+			case 5:
+				orderDessert();
+				break;		
+		}
+	    
+	}while(restaurantOption > 6 || restaurantOption < 1);
+	
+	
+    
+}
+
+void waterParkMenu()
+{
+    cout << "Please choose a option from the menu: " << endl;
+    cout << "[1] - Pool Prices" << endl;
+    cout << "[2] - Sauna Prices" << endl;
+    cout << "[3] - Jacuzzi Prices" << endl;
+    cout << "[4] - Leave Water park" << endl;
+}
+void taxiMenu()
+{
+    cout << "Please choose a option from the menu: " << endl;
+    cout << "[1] - Order a taxi(to)" << endl;
+    cout << "[2] - Order a taxi(from)" << endl;
+    cout << "[3] - Taxi Prices" << endl;
+    cout << "[4] - Exclusive taxi" << endl;
+    cout << "[5] - Leave taxi menu" << endl;
+}
+
+void checkOut()
+{
+    cout << "[1] - Pring total detph" << endl;
+    cout << "[2] - My balance" << endl;
+    cout << "[3] - Exit" << endl;
+}
+
+void chooseActivity(Client* clientPtr)
 {
 	int activityOption;
 	
@@ -270,18 +411,22 @@ void chooseActivity()
 		switch(activityOption)
 		{
 			case 1:
+			restaurantMenu(clientPtr);
 			break;
 			
 			case 2:
+			waterParkMenu();
 			break;
 			
 			case 3:
 			break;
 			
 			case 4:
+			taxiMenu();
 			break;
 			
 			case 5:
+			checkOut();
 			break;
 			
 			default:
@@ -295,6 +440,7 @@ void chooseActivity()
 
 int main()
 {
+	
 	RoomList listOfRooms;
 	SingleRoom firstSingleRoom;
 	DoubleRoom firstDoubleRoom;
@@ -308,7 +454,11 @@ int main()
 	listOfRooms.doubleRooms[0] = firstDoubleRoom;
 	listOfRooms.tripleRooms[0] = firstTripleRoom;
 	
-	roomBookingMenu(listOfRooms);
+	//roomBookingMenu(listOfRooms);
+	Client* clientPtr2;
+	Client fakeClient;
+	clientPtr2 = &fakeClient;
+	chooseActivity(clientPtr2);
 	
 	return 0;
 }
