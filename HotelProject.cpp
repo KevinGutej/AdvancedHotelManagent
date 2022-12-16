@@ -358,7 +358,11 @@ void restaurantMenu(Client* clientPtr)
 				
 			case 5:
 				orderDessert();
-				break;		
+				break;
+			
+			case 6:
+				cout << "Goodbye" << endl;	
+				break;	
 		}
 	    
 	}while(restaurantOption > 6 || restaurantOption < 1);
@@ -367,14 +371,74 @@ void restaurantMenu(Client* clientPtr)
     
 }
 
-void waterParkMenu()
+bool askAboutAgreement(float price, string activityName)
 {
-    cout << "Please choose a option from the menu: " << endl;
-    cout << "[1] - Pool Prices" << endl;
-    cout << "[2] - Sauna Prices" << endl;
-    cout << "[3] - Jacuzzi Prices" << endl;
-    cout << "[4] - Leave Water park" << endl;
+	string response;
+	do
+	{
+		cout << "Do you agree to do " <<  activityName << " for " << price << "$" << " ?" << " yes/no" << endl;
+		cin >> response;
+		if(response == "yes")
+		{
+			return true;
+		}
+		else if(response == "no")
+		{
+			return false;
+		}
+		else
+		{
+			cout << "Please enter again: " << " yes/no" << endl;
+			
+		}
+	}while(response != "yes" && response != "no");
+	
 }
+
+
+void waterParkMenu(Client* clientPtr)//NEXT LESSON
+{
+	int waterParkChoice;
+	bool agreement = false;
+	do
+	{
+		cout << "Please choose a option from the menu: " << endl;
+	    cout << "[1] - Pool Prices" << endl;
+	    cout << "[2] - Sauna Prices" << endl;
+	    cout << "[3] - Jacuzzi Prices" << endl;
+	    cout << "[4] - Leave Water park" << endl;
+	    cin >> waterParkChoice;
+	    
+	    switch(waterParkChoice)
+	    {
+	    	case 1:
+	    		//if agreement true, charge client
+	    		agreement = askAboutAgreement(25, "Pool");
+	    		break;
+	    		
+	    	case 2:	
+	    		agreement = askAboutAgreement(12, "Sauna");
+	    		break;
+	    		
+			case 3:
+				agreement = askAboutAgreement(8, "Jacuzzi");
+	    		break;
+	    		
+	    	case 4:
+	    		cout << "Goodbye" << endl;
+	    		break;
+	    		
+	    	default:
+	    		cout << "Option is not a choice, enter again" << endl;
+	    		break;
+					
+		}
+	}while(waterParkChoice < 1 || waterParkChoice > 4);
+    
+}
+
+
+
 void taxiMenu()
 {
     cout << "Please choose a option from the menu: " << endl;
