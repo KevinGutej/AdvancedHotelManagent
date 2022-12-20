@@ -396,7 +396,7 @@ bool askAboutAgreement(float price, string activityName)
 }
 
 
-void waterParkMenu(Client* clientPtr)//NEXT LESSON
+void waterParkMenu(Client* clientPtr)
 {
 	int waterParkChoice;
 	bool agreement = false;
@@ -412,16 +412,30 @@ void waterParkMenu(Client* clientPtr)//NEXT LESSON
 	    switch(waterParkChoice)
 	    {
 	    	case 1:
-	    		//if agreement true, charge client
 	    		agreement = askAboutAgreement(25, "Pool");
+	    		if(agreement == true)
+	    		{
+	    			(*clientPtr).dept += 25;
+	    			cout << "You have entered Swimming Pool" << endl;
+				}
 	    		break;
 	    		
 	    	case 2:	
 	    		agreement = askAboutAgreement(12, "Sauna");
+	    		if(agreement == true)
+	    		{
+	    			(*clientPtr).dept += 12;
+	    			cout << "You have entered Sauna" << endl;
+				}
 	    		break;
 	    		
 			case 3:
 				agreement = askAboutAgreement(8, "Jacuzzi");
+				if(agreement == true)
+	    		{
+	    			(*clientPtr).dept += 8;
+	    			cout << "You have entered Jacuzzi Pool" << endl;
+				}
 	    		break;
 	    		
 	    	case 4:
@@ -437,16 +451,62 @@ void waterParkMenu(Client* clientPtr)//NEXT LESSON
     
 }
 
-
+struct Destination
+{
+	string location = "";
+	int distanceFromHotel = 0;
+};
 
 void taxiMenu()
 {
+	int taxiOption;
+	int taxiOrderTo;
+	int i;
+	const int size = 4;
+	
+	Destination destinations[size];
+	destinations[0].location = "cinema";
+	destinations[0].distanceFromHotel = 5;
+	destinations[1].location = "old town";
+	destinations[1].distanceFromHotel = 10;
+	destinations[2].location = "supermarket";
+	destinations[2].distanceFromHotel = 3;
+	destinations[3].location = "concert";
+	destinations[3].distanceFromHotel = 7;
+	
     cout << "Please choose a option from the menu: " << endl;
     cout << "[1] - Order a taxi(to)" << endl;
     cout << "[2] - Order a taxi(from)" << endl;
     cout << "[3] - Taxi Prices" << endl;
     cout << "[4] - Exclusive taxi" << endl;
     cout << "[5] - Leave taxi menu" << endl;
+    cin >> taxiOption;
+    
+    switch(taxiOption)
+    {
+    	case 1:
+    		for(i=0; i < size; i++)
+			{
+				cout << destinations[i].location << " " << endl; //NEXT LESSON, we finished here!
+			}
+    		cout << "Where would you like to order a taxi: ";
+    		cin >> taxiOrderTo;
+    		
+    	break;
+    	
+    	case 2:
+    	break;
+    	
+    	case 3:
+    	break;
+    	
+    	case 4:
+    	break;
+    	
+    	case 5:
+    	break;
+	}
+    
 }
 
 void checkOut()
@@ -479,7 +539,7 @@ void chooseActivity(Client* clientPtr)
 			break;
 			
 			case 2:
-			waterParkMenu();
+			waterParkMenu(clientPtr);
 			break;
 			
 			case 3:
@@ -523,6 +583,7 @@ int main()
 	Client fakeClient;
 	clientPtr2 = &fakeClient;
 	chooseActivity(clientPtr2);
+	cout << "Your dept: " << (*clientPtr2).dept << endl;
 	
 	return 0;
 }
