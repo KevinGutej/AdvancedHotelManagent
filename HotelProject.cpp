@@ -462,6 +462,7 @@ void taxiMenu()
 	int taxiOption;
 	int taxiOrderTo;
 	int i;
+	float pricePerKm = 3.25;
 	const int size = 4;
 	
 	Destination destinations[size];
@@ -488,6 +489,7 @@ void taxiMenu()
     		for(i=0; i < size; i++)
 			{
 				cout << destinations[i].location << " " << endl; //NEXT LESSON, we finished here!
+				cout << pricePerKm * destinations[i].distanceFromHotel << endl;
 			}
     		cout << "Where would you like to order a taxi: ";
     		cin >> taxiOrderTo;
