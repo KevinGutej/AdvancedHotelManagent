@@ -1,4 +1,6 @@
 #include <iostream>
+#include <time.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -457,12 +459,12 @@ struct Destination
 	int distanceFromHotel = 0;
 };
 
-void taxiMenu()
+void taxiMenu(Client* clientPtr)
 {
 	int taxiOption;
-	int taxiOrderTo;
+	string taxiOrderTo;
 	int i;
-	float pricePerKm = 3.25;
+	float pricePerKm = ((rand() % 4) + 7) / 2.0;
 	const int size = 4;
 	
 	Destination destinations[size];
@@ -488,11 +490,16 @@ void taxiMenu()
     	case 1:
     		for(i=0; i < size; i++)
 			{
-				cout << destinations[i].location << " " << endl; //NEXT LESSON, we finished here!
-				cout << pricePerKm * destinations[i].distanceFromHotel << endl;
+				cout << destinations[i].location << " "; //NEXT LESSON, we finished here!
+				cout << pricePerKm * destinations[i].distanceFromHotel<< "$" << endl;
 			}
     		cout << "Where would you like to order a taxi: ";
     		cin >> taxiOrderTo;
+    		if(taxiOrderTo == "cinema")
+    		{
+    			(*clientPtr).dept += pricePerKm * destinations[0].distanceFromHotel;
+			}
+    		
     		
     	break;
     	
@@ -548,7 +555,7 @@ void chooseActivity(Client* clientPtr)
 			break;
 			
 			case 4:
-			taxiMenu();
+			taxiMenu(clientPtr);
 			break;
 			
 			case 5:
@@ -566,6 +573,8 @@ void chooseActivity(Client* clientPtr)
 
 int main()
 {
+	
+	srand(time(NULL));
 	
 	RoomList listOfRooms;
 	SingleRoom firstSingleRoom;
