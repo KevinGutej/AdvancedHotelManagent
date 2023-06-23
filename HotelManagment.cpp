@@ -1,6 +1,8 @@
 #include <iostream>
 #include <time.h>
 #include <stdlib.h>
+#include <sstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -20,7 +22,7 @@ struct SingleRoom
 	int pin = 0;
 	static const int roomSize = 1;
 	Client clients[roomSize];
-	float price = 50.0; 
+	float price = 50.0;
 };
 
 struct DoubleRoom
@@ -29,7 +31,7 @@ struct DoubleRoom
 	int pin = 0;
 	static const int roomSize = 2;
 	Client clients[roomSize];
-	float price = 100.0; 
+	float price = 100.0;
 };
 
 struct TripleRoom
@@ -38,7 +40,7 @@ struct TripleRoom
 	int pin = 0;
 	static const int roomSize = 3;
 	Client clients[roomSize];
-	float price = 150.0; 
+	float price = 150.0;
 };
 
 struct GroupOfClients
@@ -52,7 +54,7 @@ struct RoomList
 	SingleRoom singleRooms[10];
 	DoubleRoom doubleRooms[6];
 	TripleRoom tripleRooms[3];
-	
+
 };
 
 void display(Client c){
@@ -62,20 +64,33 @@ void display(Client c){
 Client getClientDetail()
 {
 	Client firstClient;
-	
+
 	cout << "Please enter first name: ";
 	cin >> firstClient.firstName;
 	cout << "Please enter last name: ";
 	cin >> firstClient.lastName;
-	cout << "Please enter your age: "; 
+	cout << "Please enter your age: ";
 	cin >> firstClient.age;
 	cout << "Please enter email: ";
 	cin >> firstClient.email;
-	
-	return firstClient;	
+
+	return firstClient;
 }
 
+string priceToString(float price)
+{
+    stringstream priceOfStream;
+    priceOfStream << fixed << setprecision(2) << price << " $";
+    string stringedPrice = priceOfStream.str();
+    return stringedPrice;
 
+}
+
+void pay(Client* clientPtr, string title, float price) {
+
+    (*clientPtr).dept += price;
+    (*clientPtr).receipt += title + " " + priceToString(price) + "\n";
+}
 
 void printAvaiableRooms(int roomSize, RoomList listOfRooms)
 {
@@ -95,10 +110,10 @@ void printAvaiableRooms(int roomSize, RoomList listOfRooms)
 				cout << "Room is Available" << endl;
 			}
 			cout << "---------------------- " << endl;
-		}	
+		}
 	}
-		
-	
+
+
 	else if(roomSize == 2)
 	{
 		for(i=0; i < 6; i++)
@@ -116,7 +131,7 @@ void printAvaiableRooms(int roomSize, RoomList listOfRooms)
 			cout << "---------------------- " << endl;
 		}
 	}
-	
+
 	else if(roomSize == 3)
 	{
 		for(i=0; i < 3; i++)
@@ -138,7 +153,7 @@ void printAvaiableRooms(int roomSize, RoomList listOfRooms)
 	{
 		cout << "Room size is not available" << endl;
 	}
-	
+
 }
 
 bool checkIfRoomNumberIsAvailable(int roomNumber, RoomList listOfRooms)
@@ -150,23 +165,7 @@ bool checkIfRoomNumberIsAvailable(int roomNumber, RoomList listOfRooms)
 		{
 			if(listOfRooms.singleRooms[i].clients[0].firstName == "")
 			{
-				return true;	
-			}
-			else
-			{
-				cout << "This room is not available, enter again" << endl;
-				return false;
-			}
-		}		
-	}
-	
-	for(i=0; i < 6; i++)
-	{
-		if(listOfRooms.doubleRooms[i].roomNumber == roomNumber)
-		{
-			if(listOfRooms.doubleRooms[i].clients[0].firstName == "")
-			{
-				return true;	
+				return true;
 			}
 			else
 			{
@@ -175,14 +174,30 @@ bool checkIfRoomNumberIsAvailable(int roomNumber, RoomList listOfRooms)
 			}
 		}
 	}
-	
+
+	for(i=0; i < 6; i++)
+	{
+		if(listOfRooms.doubleRooms[i].roomNumber == roomNumber)
+		{
+			if(listOfRooms.doubleRooms[i].clients[0].firstName == "")
+			{
+				return true;
+			}
+			else
+			{
+				cout << "This room is not available, enter again" << endl;
+				return false;
+			}
+		}
+	}
+
 	for(i=0; i < 3;  i++)
 	{
 		if(listOfRooms.tripleRooms[i].roomNumber == roomNumber)
 		{
 			if(listOfRooms.tripleRooms[i].clients[0].firstName == "")
 			{
-				return true;	
+				return true;
 			}
 			else
 			{
@@ -206,20 +221,20 @@ void roomBookingMenu(RoomList listOfRooms)
 	{
 		cout << "What room size would you like(1,2,3): " << endl;
 		cin >> roomSize;
-		
-		
+
+
 		printAvaiableRooms(roomSize,listOfRooms);
 	}while(roomSize > 3 || roomSize < 0);
-	
-	
-	
+
+
+
 	do
 	{
 		cout << "Which room number would you like?: ";
 		cin >> roomNumber;
 	}
 	while(checkIfRoomNumberIsAvailable(roomNumber, listOfRooms) == false);
-	
+
 	for(i=0; i < roomSize; i++)
 	{
 		Client clientDetail = getClientDetail();
@@ -229,27 +244,27 @@ void roomBookingMenu(RoomList listOfRooms)
 			{
 				listOfRooms.singleRooms[j].clients[i] = clientDetail;
 				pin = listOfRooms.singleRooms[j].pin;
-			}		
+			}
 		}
-		
+
 		for(j=0; j < 6; j++)
 		{
 			if(listOfRooms.doubleRooms[j].roomNumber == roomNumber)
 			{
 				listOfRooms.doubleRooms[j].clients[i] = clientDetail;
 				pin = listOfRooms.doubleRooms[j].pin;
-			}		
+			}
 		}
-		
-		
+
+
 		for(j=0; j < 3; j++)
 		{
 			if(listOfRooms.tripleRooms[j].roomNumber == roomNumber)
 			{
 				listOfRooms.tripleRooms[j].clients[i] = clientDetail;
 				pin = listOfRooms.tripleRooms[j].pin;
-			}		
-		}	
+			}
+		}
 	}
 	cout << "Use this pin to enter your room: " << pin << endl;
 }
@@ -257,12 +272,12 @@ void roomBookingMenu(RoomList listOfRooms)
 void orderDrink(Client* clientPtr)
 {
 	string drinkChoice;
-	
+
 	do{
 		cout << "Drink options: (CocaCola, Fanta, Sprite, Water, Coffee, Slushy)" << endl;
 		cout << "Please enter drink choice: " << endl;
 		cin >> drinkChoice;
-		
+
 		if(drinkChoice == "CocaCola")
 		{
 			cout << "You have chosen CocaCola" << endl;
@@ -296,13 +311,13 @@ void orderDrink(Client* clientPtr)
 		else{
 			drinkChoice = "Incorrect";
 		}
-		
+
 	}while(drinkChoice == "Incorrect");
 }
 
 void orderDessert()
 {
-	
+
 }
 
 void restaurantMenu(Client* clientPtr)
@@ -311,67 +326,67 @@ void restaurantMenu(Client* clientPtr)
 	bool isMainCourseOrdered = false;
 	bool isDrinkOrdered = false;
 	bool isDessertOrdered = false;
-	
+
 	do{
 		cout << "Please choose what you would like to order from the menu: " << endl;
 	    cout << "Drink options: (Coca-Cola, Fanta, Sprite, Water, Coffee, Slushy)" << endl;
 	    cout << "Dessert options: (Ice-cream, FrozenHotChocolate, Flapjack, Pankaces)" << endl;
-	    
+
 	    if(isMainCourseOrdered == false)
 	    {
 	    	cout << "[1] - Pizza" << endl;
 		    cout << "[2] - Buger" << endl;
 		    cout << "[3] - Fries" << endl;
 		}
-	    
+
 	    if(isDrinkOrdered == false)
 	    {
 	    	cout << "[4] - Drink: " << endl;
 		}
-	    
+
 	    if(isDessertOrdered == false)
 	    {
 	    	cout << "[5] - Dessert: " << endl;
 		}
-		
+
 	    cout << "[6] - Leave restaurant" << endl;
 	    cin >> restaurantOption;
-	    
-	    
+
+
 		switch(restaurantOption)
 		{
 			case 1:
 				cout << "You have ordered pizza" << endl;
 				(*clientPtr).dept += 20;
 				break;
-				
+
 			case 2:
 				cout << "You have ordered burger" << endl;
 				(*clientPtr).dept += 12;
 				break;
-				
+
 			case 3:
 				cout << "You have ordered fries" << endl;
 				(*clientPtr).dept += 5;
 				break;
-				
+
 			case 4:
 				orderDrink(clientPtr);
 				break;
-				
+
 			case 5:
 				orderDessert();
 				break;
-			
+
 			case 6:
-				cout << "Goodbye" << endl;	
-				break;	
+				cout << "Goodbye" << endl;
+				break;
 		}
-	    
+
 	}while(restaurantOption > 6 || restaurantOption < 1);
-	
-	
-    
+
+
+
 }
 
 bool askAboutAgreement(float price, string activityName)
@@ -392,12 +407,11 @@ bool askAboutAgreement(float price, string activityName)
 		else
 		{
 			cout << "Please enter again: " << " yes/no" << endl;
-			
+
 		}
 	}while(response != "yes" && response != "no");
-	
-}
 
+}
 
 void waterParkMenu(Client* clientPtr)
 {
@@ -411,7 +425,7 @@ void waterParkMenu(Client* clientPtr)
 	    cout << "[3] - Jacuzzi Prices" << endl;
 	    cout << "[4] - Leave Water park" << endl;
 	    cin >> waterParkChoice;
-	    
+
 	    switch(waterParkChoice)
 	    {
 	    	case 1:
@@ -419,19 +433,21 @@ void waterParkMenu(Client* clientPtr)
 	    		if(agreement == true)
 	    		{
 	    			(*clientPtr).dept += 25;
+	    			(*clientPtr).receipt += "Pool: " + priceToString(25) + "\n";
 	    			cout << "You have entered Swimming Pool" << endl;
 				}
 	    		break;
-	    		
-	    	case 2:	
+
+	    	case 2:
 	    		agreement = askAboutAgreement(12, "Sauna");
 	    		if(agreement == true)
 	    		{
 	    			(*clientPtr).dept += 12;
+	    			(*clientPtr).receipt += "Sauna: " + priceToString(12) + "\n";
 	    			cout << "You have entered Sauna" << endl;
 				}
 	    		break;
-	    		
+
 			case 3:
 				agreement = askAboutAgreement(8, "Jacuzzi");
 				if(agreement == true)
@@ -440,18 +456,18 @@ void waterParkMenu(Client* clientPtr)
 	    			cout << "You have entered Jacuzzi Pool" << endl;
 				}
 	    		break;
-	    		
+
 	    	case 4:
 	    		cout << "Goodbye" << endl;
 	    		break;
-	    		
+
 	    	default:
 	    		cout << "Option is not a choice, enter again" << endl;
 	    		break;
-					
+
 		}
 	}while(waterParkChoice < 1 || waterParkChoice > 4);
-    
+
 }
 
 struct Destination
@@ -467,17 +483,17 @@ void taxiMenu(Client* clientPtr)
 	int i;
 	float pricePerKm = ((rand() % 4) + 7) / 2.0;
 	const int size = 4;
-	
+
 	Destination destinations[size];
 	destinations[0].location = "cinema";
 	destinations[0].distanceFromHotel = 5;
-	destinations[1].location = "old town";
+	destinations[1].location = "oldtown";
 	destinations[1].distanceFromHotel = 10;
 	destinations[2].location = "supermarket";
 	destinations[2].distanceFromHotel = 3;
 	destinations[3].location = "concert";
 	destinations[3].distanceFromHotel = 7;
-	
+
     cout << "Please choose a option from the menu: " << endl;
     cout << "[1] - Order a taxi(to)" << endl;
     cout << "[2] - Order a taxi(from)" << endl;
@@ -485,34 +501,36 @@ void taxiMenu(Client* clientPtr)
     cout << "[4] - Exclusive taxi" << endl;
     cout << "[5] - Leave taxi menu" << endl;
     cin >> taxiOption;
-    
+
     switch(taxiOption)
     {
     	case 1:
     		for(i=0; i < size; i++)
 			{
-				cout << destinations[i].location << " "; //NEXT LESSON, we finished here!
+				cout << destinations[i].location << " ";
 				cout << pricePerKm * destinations[i].distanceFromHotel<< "$" << endl;
 			}
     		cout << "Where would you like to order a taxi: ";
     		cin >> taxiOrderTo;
     		if(taxiOrderTo == "cinema")
     		{
-    			(*clientPtr).dept += pricePerKm * destinations[0].distanceFromHotel;
+    		    string title = "cinema";
+    		    float price = pricePerKm * destinations[0].distanceFromHotel;
+    			pay(clientPtr, title, price);
 			}
-    		
-    		
+
+
     	break;
-    	
+
     	case 2:
     	break;
-    	
+
     	case 3:
     	break;
-    	
+
     	case 4:
     	break;
-    	
+
     	case 5:
     	break;
 	}
@@ -540,16 +558,16 @@ void checkOut(Client* clientPtr)
 			cout << "Your balance is : " << "-" << (*clientPtr).dept << "$" << endl;
 		}
 	}while(checkOutOption != 3);
-	
+
 
 }
 
 void chooseActivity(Client* clientPtr)
 {
 	int activityOption;
-	
-	
-	
+
+
+
 	do{
 		cout << "Please choose a activity " << endl;
 		cout << "[1] - Order food" << endl;
@@ -557,63 +575,63 @@ void chooseActivity(Client* clientPtr)
 		cout << "[3] - Book a VIP area" << endl;
 		cout << "[4] - Book a transport" << endl;
 		cout << "[5] - Check out" << endl;
-	
+
 		cin >> activityOption;
-		
+
 		switch(activityOption)
 		{
 			case 1:
 			restaurantMenu(clientPtr);
 			break;
-			
+
 			case 2:
 			waterParkMenu(clientPtr);
 			break;
-			
+
 			case 3:
 			break;
-			
+
 			case 4:
 			taxiMenu(clientPtr);
 			break;
-			
+
 			case 5:
 			checkOut(clientPtr);
 			break;
-			
+
 			default:
-			cout << "Incorrect activity" << endl;	
-		}	
-		
+			cout << "Incorrect activity" << endl;
+		}
+
 	}while(true);
-	
-	
+
+
 }
 
 int main()
 {
 	//ENTER SOMETHING IN RECIEPT (IN CLIENT WHILE BUYING SOMETHING)!!!!!!!!!!!
 	srand(time(NULL));
-	
+
 	RoomList listOfRooms;
 	SingleRoom firstSingleRoom;
 	DoubleRoom firstDoubleRoom;
 	TripleRoom firstTripleRoom;
-	
+
 	firstSingleRoom.pin = 2345;
 	firstDoubleRoom.pin = 4356;
 	firstTripleRoom.pin = 8576;
-	
+
 	listOfRooms.singleRooms[0] = firstSingleRoom;
 	listOfRooms.doubleRooms[0] = firstDoubleRoom;
 	listOfRooms.tripleRooms[0] = firstTripleRoom;
-	
+
 	//roomBookingMenu(listOfRooms);
 	Client* clientPtr2;
 	Client fakeClient;
 	clientPtr2 = &fakeClient;
 	chooseActivity(clientPtr2);
 	cout << "Your dept: " << (*clientPtr2).dept << endl;
-	
+
 	return 0;
 }
