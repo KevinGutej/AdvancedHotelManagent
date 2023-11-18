@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iomanip>
 
+
 using namespace std;
 
 struct Client
@@ -274,39 +275,39 @@ void orderDrink(Client* clientPtr)
 	string drinkChoice;
 
 	do{
-		cout << "Drink options: (CocaCola, Fanta, Sprite, Water, Coffee, Slushy)" << endl;
+		cout << "Drink options: (Coca Cola, Fanta, Sprite, Water, Coffee, Slushy)" << endl;
 		cout << "Please enter drink choice: " << endl;
 		cin >> drinkChoice;
 
-		if(drinkChoice == "CocaCola")
+		if(drinkChoice == "Coca Cola")
 		{
-			cout << "You have chosen CocaCola" << endl;
-			(*clientPtr).dept += 3;
+			cout << "You have chosen Coca Cola" << endl;
+			pay(clientPtr, "Coca Cola", 3);
 		}
 		else if(drinkChoice == "Fanta")
 		{
 			cout << "You have chosen Fanta" << endl;
-			(*clientPtr).dept += 3;
+			pay(clientPtr, "Fanta", 3);
 		}
 		else if(drinkChoice == "Sprite")
 		{
 			cout << "You have chosen Sprite" << endl;
-			(*clientPtr).dept += 3;
+			pay(clientPtr, "Sprite", 3);
 		}
 		else if(drinkChoice == "Water")
 		{
 			cout << "You have chosen Water" << endl;
-			(*clientPtr).dept += 2;
+			pay(clientPtr, "Water", 2);
 		}
 		else if(drinkChoice == "Coffee")
 		{
 			cout << "You have chosen Coffee" << endl;
-			(*clientPtr).dept += 4;
+			pay(clientPtr, "Coffee", 5);
 		}
 		else if(drinkChoice == "Slushy")
 		{
 			cout << "You have chosen Slushy" << endl;
-			(*clientPtr).dept += 4;
+			pay(clientPtr, "Slushy", 6);
 		}
 		else{
 			drinkChoice = "Incorrect";
@@ -315,9 +316,50 @@ void orderDrink(Client* clientPtr)
 	}while(drinkChoice == "Incorrect");
 }
 
-void orderDessert()
+void informAboutOrder(string orderName)
 {
+	cout << "You have ordered: " << orderName << endl;
+}
 
+void orderDessert(Client* clientPtr)
+{
+	int dessertOption = 0;
+	float price = 0.0f;
+	string orderName;
+	int pancakes = 0;
+		
+	switch(dessertOption) {
+		case 1:	
+			orderName = "Ice-Cream, $3.25";
+			price = 3.25;
+			break;
+		case 2:	
+			orderName = "Hot Chocolate, $2.99";
+			price = 2.99;
+			break;
+		case 3:	
+			orderName = "Flapjack, $3.56";
+			price = 3.56;
+			break;
+		case 4:	
+			price = 5.50;
+			cout << "How many pancakes would you like: " << endl;
+			cout << "1 pancake, $5.50" << endl;
+			cin >> pancakes;
+			if(pancakes >= 1) {
+				orderName = priceToString(pancakes) + " Pancakes";
+				price = pancakes * price;
+			}else {
+				cout << "Please enter a positive number." << endl;
+				return;
+			}
+			break;
+		default:
+			cout << "Option entered is not available" << endl;
+			return;
+	}
+	informAboutOrder(orderName);
+	pay(clientPtr, orderName, price);
 }
 
 void restaurantMenu(Client* clientPtr)
@@ -330,7 +372,7 @@ void restaurantMenu(Client* clientPtr)
 	do{
 		cout << "Please choose what you would like to order from the menu: " << endl;
 	    cout << "Drink options: (Coca-Cola, Fanta, Sprite, Water, Coffee, Slushy)" << endl;
-	    cout << "Dessert options: (Ice-cream, FrozenHotChocolate, Flapjack, Pankaces)" << endl;
+	    cout << "Dessert options: (Ice-cream, HotChocolate, Flapjack, Pankaces)" << endl;
 
 	    if(isMainCourseOrdered == false)
 	    {
@@ -357,17 +399,17 @@ void restaurantMenu(Client* clientPtr)
 		{
 			case 1:
 				cout << "You have ordered pizza" << endl;
-				(*clientPtr).dept += 20;
+				pay(clientPtr, "pizza", 20);
 				break;
 
 			case 2:
 				cout << "You have ordered burger" << endl;
-				(*clientPtr).dept += 12;
+				pay(clientPtr, "burger", 15);
 				break;
 
 			case 3:
 				cout << "You have ordered fries" << endl;
-				(*clientPtr).dept += 5;
+				pay(clientPtr, "fries", 5);
 				break;
 
 			case 4:
@@ -375,7 +417,7 @@ void restaurantMenu(Client* clientPtr)
 				break;
 
 			case 5:
-				orderDessert();
+				orderDessert(clientPtr);
 				break;
 
 			case 6:
@@ -432,8 +474,7 @@ void waterParkMenu(Client* clientPtr)
 	    		agreement = askAboutAgreement(25, "Pool");
 	    		if(agreement == true)
 	    		{
-	    			(*clientPtr).dept += 25;
-	    			(*clientPtr).receipt += "Pool: " + priceToString(25) + "\n";
+	    			pay(clientPtr, "Swimming Pool", 25);
 	    			cout << "You have entered Swimming Pool" << endl;
 				}
 	    		break;
@@ -442,8 +483,7 @@ void waterParkMenu(Client* clientPtr)
 	    		agreement = askAboutAgreement(12, "Sauna");
 	    		if(agreement == true)
 	    		{
-	    			(*clientPtr).dept += 12;
-	    			(*clientPtr).receipt += "Sauna: " + priceToString(12) + "\n";
+	    			pay(clientPtr, "Sauna", 12);
 	    			cout << "You have entered Sauna" << endl;
 				}
 	    		break;
@@ -452,7 +492,7 @@ void waterParkMenu(Client* clientPtr)
 				agreement = askAboutAgreement(8, "Jacuzzi");
 				if(agreement == true)
 	    		{
-	    			(*clientPtr).dept += 8;
+	    			pay(clientPtr, "Jacuzzi", 8);
 	    			cout << "You have entered Jacuzzi Pool" << endl;
 				}
 	    		break;
