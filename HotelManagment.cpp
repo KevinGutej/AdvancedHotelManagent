@@ -15,6 +15,7 @@ struct Client
 	float dept = 0.0;
 	string email = "";
 	string receipt = "";
+	string currentLocation = "hotel";
 };
 
 struct SingleRoom
@@ -327,6 +328,10 @@ void orderDessert(Client* clientPtr)
 	float price = 0.0f;
 	string orderName;
 	int pancakes = 0;
+	
+	cout << "Dessert options: Ice-cream (1), HotChocolate(2), Flapjack(3), Pankaces(4)" << endl;
+	cout << "Please enter dessert option using a number: ";
+	cin >> dessertOption;
 		
 	switch(dessertOption) {
 		case 1:	
@@ -371,8 +376,6 @@ void restaurantMenu(Client* clientPtr)
 
 	do{
 		cout << "Please choose what you would like to order from the menu: " << endl;
-	    cout << "Drink options: (Coca-Cola, Fanta, Sprite, Water, Coffee, Slushy)" << endl;
-	    cout << "Dessert options: (Ice-cream, HotChocolate, Flapjack, Pankaces)" << endl;
 
 	    if(isMainCourseOrdered == false)
 	    {
@@ -383,12 +386,12 @@ void restaurantMenu(Client* clientPtr)
 
 	    if(isDrinkOrdered == false)
 	    {
-	    	cout << "[4] - Drink: " << endl;
+	    	cout << "[4] - Drink " << endl;
 		}
 
 	    if(isDessertOrdered == false)
 	    {
-	    	cout << "[5] - Dessert: " << endl;
+	    	cout << "[5] - Dessert " << endl;
 		}
 
 	    cout << "[6] - Leave restaurant" << endl;
@@ -518,7 +521,7 @@ struct Destination
 
 void taxiMenu(Client* clientPtr)
 {
-	int taxiOption;
+	int taxiOption = 1;
 	string taxiOrderTo;
 	int i;
 	float pricePerKm = ((rand() % 4) + 7) / 2.0;
@@ -533,48 +536,73 @@ void taxiMenu(Client* clientPtr)
 	destinations[2].distanceFromHotel = 3;
 	destinations[3].location = "concert";
 	destinations[3].distanceFromHotel = 7;
-
-    cout << "Please choose a option from the menu: " << endl;
-    cout << "[1] - Order a taxi(to)" << endl;
-    cout << "[2] - Order a taxi(from)" << endl;
-    cout << "[3] - Taxi Prices" << endl;
-    cout << "[4] - Exclusive taxi" << endl;
-    cout << "[5] - Leave taxi menu" << endl;
-    cin >> taxiOption;
-
-    switch(taxiOption)
-    {
-    	case 1:
-    		for(i=0; i < size; i++)
-			{
-				cout << destinations[i].location << " ";
-				cout << pricePerKm * destinations[i].distanceFromHotel<< "$" << endl;
-			}
-    		cout << "Where would you like to order a taxi: ";
-    		cin >> taxiOrderTo;
-    		if(taxiOrderTo == "cinema")
-    		{
-    		    string title = "cinema";
-    		    float price = pricePerKm * destinations[0].distanceFromHotel;
-    			pay(clientPtr, title, price);
-			}
-
-
-    	break;
-
-    	case 2:
-    	break;
-
-    	case 3:
-    	break;
-
-    	case 4:
-    	break;
-
-    	case 5:
-    	break;
-	}
-
+	
+	
+	do {
+		
+		cout << "Please choose a option from the menu: " << endl;
+	    cout << "[1] - Order a taxi(to)" << endl;
+	    cout << "[2] - Order a taxi(from)" << endl;
+	    cout << "[3] - Leave taxi menu" << endl;
+	    cin >> taxiOption;
+		bool isLocationChosen = false; 	 
+		char confirmationOption = 'n';   
+	    
+	    switch(taxiOption)
+    	{
+	    	case 1:
+	    		if(clientPtr->currentLocation == "hotel") {
+	    			for(i=0; i < size; i++)
+					{
+						cout << destinations[i].location << " ";
+						cout << pricePerKm * destinations[i].distanceFromHotel<< "$" << endl;
+					}
+	    			cout << "Where would you like to order a taxi: ";
+	    			cin >> taxiOrderTo;
+	    			for(i=0; i < size; i++) {
+	    				if(taxiOrderTo == destinations[i].location) {
+	    					isLocationChosen = true; 	 
+	    					string title = taxiOrderTo;
+			    		    float price = pricePerKm * destinations[i].distanceFromHotel;
+			    			pay(clientPtr, title, price);
+			    			clientPtr->currentLocation = taxiOrderTo;
+						}
+					}
+	    			if(isLocationChosen == false) {
+						cout << "Location dosen't exist" << endl;
+					}
+				}
+	    	break;
+	
+	    	case 2:
+	    		if(clientPtr->currentLocation == "hotel") {
+	    			cout << "You are currently in hotel" << endl;
+				}else {
+					for(i=0; i < size; i++)
+					{
+						if(destinations[i].location == clientPtr->currentLocation) {
+							cout << "To return to hotel, you need to pay: " << pricePerKm * destinations[i].distanceFromHotel<< "$" << endl;
+							cout << "Are you sure you want to pay (y/n)" << endl;
+							cin >> confirmationOption;
+							if(confirmationOption == 'y') {
+									string title = "Return to Hotel";
+									float price = pricePerKm * destinations[i].distanceFromHotel;
+				    				pay(clientPtr, title, price);
+				    				clientPtr->currentLocation = "hotel";
+							}else {
+								cout << "Payment cancelled" << endl;
+							}
+						}
+							
+					}
+						
+				}
+	    	break;
+	
+	    	case 3:
+	    		break;
+		}
+	}while(taxiOption < 1 || taxiOption >= 3);
 }
 
 void checkOut(Client* clientPtr)
@@ -650,7 +678,6 @@ void chooseActivity(Client* clientPtr)
 
 int main()
 {
-	//ENTER SOMETHING IN RECIEPT (IN CLIENT WHILE BUYING SOMETHING)!!!!!!!!!!!
 	srand(time(NULL));
 
 	RoomList listOfRooms;
