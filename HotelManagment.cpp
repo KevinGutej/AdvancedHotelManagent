@@ -16,6 +16,8 @@ struct Client
 	string email = "";
 	string receipt = "";
 	string currentLocation = "hotel";
+	bool hasMembership = false;
+	int numberOfFreeRides = 0;
 };
 
 struct SingleRoom
@@ -274,7 +276,9 @@ void roomBookingMenu(RoomList listOfRooms)
 void orderDrink(Client* clientPtr)
 {
 	string drinkChoice;
-
+	string drinkName = "";
+	float drinkPrice = 0.0;
+	
 	do{
 		cout << "Drink options: (Coca Cola, Fanta, Sprite, Water, Coffee, Slushy)" << endl;
 		cout << "Please enter drink choice: " << endl;
@@ -282,37 +286,42 @@ void orderDrink(Client* clientPtr)
 
 		if(drinkChoice == "Coca Cola")
 		{
-			cout << "You have chosen Coca Cola" << endl;
-			pay(clientPtr, "Coca Cola", 3);
+			drinkName = "Coca Cola";
+			drinkPrice = 5;
 		}
 		else if(drinkChoice == "Fanta")
 		{
-			cout << "You have chosen Fanta" << endl;
-			pay(clientPtr, "Fanta", 3);
+			drinkName = "Fanta";
+			drinkPrice = 4;
 		}
 		else if(drinkChoice == "Sprite")
 		{
-			cout << "You have chosen Sprite" << endl;
-			pay(clientPtr, "Sprite", 3);
+			drinkName = "Sprite";
+			drinkPrice = 3.50;
 		}
 		else if(drinkChoice == "Water")
 		{
-			cout << "You have chosen Water" << endl;
-			pay(clientPtr, "Water", 2);
+			drinkName = "Water";
+			drinkPrice = 2;
 		}
 		else if(drinkChoice == "Coffee")
 		{
-			cout << "You have chosen Coffee" << endl;
-			pay(clientPtr, "Coffee", 5);
+			drinkName = "Coffee";
+			drinkPrice = 3;
 		}
 		else if(drinkChoice == "Slushy")
 		{
-			cout << "You have chosen Slushy" << endl;
-			pay(clientPtr, "Slushy", 6);
+			drinkName = "Slushy";
+			drinkPrice = 6;
 		}
 		else{
 			drinkChoice = "Incorrect";
 		}
+		if((*clientPtr).hasMembership == true) {
+			drinkPrice = drinkPrice * 0.75;
+		}
+		cout << "You have purchased " << drinkName;
+		pay(clientPtr, drinkName, drinkPrice);
 
 	}while(drinkChoice == "Incorrect");
 }
@@ -363,8 +372,11 @@ void orderDessert(Client* clientPtr)
 			cout << "Option entered is not available" << endl;
 			return;
 	}
-	informAboutOrder(orderName);
-	pay(clientPtr, orderName, price);
+	if((*clientPtr).hasMembership == true) {
+			price = price * 0.75;
+		}
+		cout << "You have purchased " << orderName;	
+		pay(clientPtr, orderName, price);
 }
 
 void restaurantMenu(Client* clientPtr)
@@ -396,23 +408,24 @@ void restaurantMenu(Client* clientPtr)
 
 	    cout << "[6] - Leave restaurant" << endl;
 	    cin >> restaurantOption;
-
+		float price = 0.0;
+		string foodName = "";
 
 		switch(restaurantOption)
 		{
 			case 1:
-				cout << "You have ordered pizza" << endl;
-				pay(clientPtr, "pizza", 20);
+				price = 20.0;
+				foodName = "Pizza";
 				break;
 
 			case 2:
-				cout << "You have ordered burger" << endl;
-				pay(clientPtr, "burger", 15);
+				price = 15.0;
+				foodName = "Burger";
 				break;
 
 			case 3:
-				cout << "You have ordered fries" << endl;
-				pay(clientPtr, "fries", 5);
+				price = 5.0;
+				foodName = "Fries";
 				break;
 
 			case 4:
@@ -427,6 +440,11 @@ void restaurantMenu(Client* clientPtr)
 				cout << "Goodbye" << endl;
 				break;
 		}
+		if((*clientPtr).hasMembership == true) {
+			price = price * 0.75;
+		}
+		cout << "You have purchased " << foodName;
+		pay(clientPtr, foodName, price);
 
 	}while(restaurantOption > 6 || restaurantOption < 1);
 
@@ -546,7 +564,8 @@ void taxiMenu(Client* clientPtr)
 	    cout << "[3] - Leave taxi menu" << endl;
 	    cin >> taxiOption;
 		bool isLocationChosen = false; 	 
-		char confirmationOption = 'n';   
+		char confirmationOption = 'n';  
+		char freeRideConfirmation = 'n'; 
 	    
 	    switch(taxiOption)
     	{
@@ -580,18 +599,30 @@ void taxiMenu(Client* clientPtr)
 				}else {
 					for(i=0; i < size; i++)
 					{
+						float price = 0.0;
 						if(destinations[i].location == clientPtr->currentLocation) {
-							cout << "To return to hotel, you need to pay: " << pricePerKm * destinations[i].distanceFromHotel<< "$" << endl;
-							cout << "Are you sure you want to pay (y/n)" << endl;
-							cin >> confirmationOption;
-							if(confirmationOption == 'y') {
+							if((*clientPtr).numberOfFreeRides > 0) {
+								cout << "You have VIP membership, so you have " << (*clientPtr).numberOfFreeRides << "free rides" << endl;
+								cout << "Are you sure you wanna use your free ride (y,n)" << endl;
+								cin >> freeRideConfirmation;
+								if(freeRideConfirmation == 'y') {
+									(*clientPtr).numberOfFreeRides -= 1;
+									(*clientPtr).currentLocation = "hotel";
+								}
+							}else{
+								cout << "To return to hotel, you need to pay: " << pricePerKm * destinations[i].distanceFromHotel<< "$" << endl;
+								cout << "Are you sure you want to pay (y/n)" << endl;
+								cin >> confirmationOption;
+								if(confirmationOption == 'y') {
 									string title = "Return to Hotel";
 									float price = pricePerKm * destinations[i].distanceFromHotel;
-				    				pay(clientPtr, title, price);
-				    				clientPtr->currentLocation = "hotel";
-							}else {
-								cout << "Payment cancelled" << endl;
+					    			pay(clientPtr, title, price);
+					    			clientPtr->currentLocation = "hotel";
+								}else {
+									cout << "Payment cancelled" << endl;
+								}	
 							}
+							
 						}
 							
 					}
@@ -630,6 +661,26 @@ void checkOut(Client* clientPtr)
 
 }
 
+void vipMenu(Client* clientPtr) {
+	cout << "VIP membership includes:" << endl;
+	cout << "25% discount on food and drinks" << endl;
+	cout << "Exclusive access to the jacuzzi and sauna" << endl;
+	cout << "1 Free ride back to the hotel" << endl;
+	float membershipPrice = 50.0;
+	cout << "Would you like to buy VIP membership for " << membershipPrice << " $(y,n)" << endl;
+	char membershipChoice = 'n';
+	cin >> membershipChoice;
+	if(membershipChoice == 'y') {
+		cout << endl;
+		cout << "Congratulation you have successfully purchased the membership" << endl;
+		pay(clientPtr, "VIP Membership", membershipPrice);
+		(*clientPtr).hasMembership = true;
+		(*clientPtr).numberOfFreeRides = 1;
+	}else{
+		cout << "Cancelled payment" << endl;
+	}
+}
+
 void chooseActivity(Client* clientPtr)
 {
 	int activityOption;
@@ -640,7 +691,7 @@ void chooseActivity(Client* clientPtr)
 		cout << "Please choose a activity " << endl;
 		cout << "[1] - Order food" << endl;
 		cout << "[2] - Go to water park" << endl;
-		cout << "[3] - Book a VIP area" << endl;
+		cout << "[3] - Buy a VIP membership" << endl;
 		cout << "[4] - Book a transport" << endl;
 		cout << "[5] - Check out" << endl;
 
@@ -657,6 +708,7 @@ void chooseActivity(Client* clientPtr)
 			break;
 
 			case 3:
+			vipMenu(clientPtr);
 			break;
 
 			case 4:
