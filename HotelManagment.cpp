@@ -1,8 +1,9 @@
-#include <iostream>
+                                   #include <iostream>
 #include <time.h>
 #include <stdlib.h>
 #include <sstream>
 #include <iomanip>
+
 
 
 using namespace std;
@@ -278,11 +279,15 @@ void orderDrink(Client* clientPtr)
 	string drinkChoice;
 	string drinkName = "";
 	float drinkPrice = 0.0;
+	int ignoreCounter = 0;
 	
 	do{
 		cout << "Drink options: (Coca Cola, Fanta, Sprite, Water, Coffee, Slushy)" << endl;
 		cout << "Please enter drink choice: " << endl;
-		cin >> drinkChoice;
+		if(ignoreCounter == 0) {
+			cin.ignore(1,'/n');
+		}
+		getline(cin, drinkChoice);
 
 		if(drinkChoice == "Coca Cola")
 		{
@@ -375,9 +380,9 @@ void orderDessert(Client* clientPtr)
 	if((*clientPtr).hasMembership == true) {
 			price = price * 0.75;
 		}
-		cout << "You have purchased " << orderName;	
+		cout << "You have purchased " << orderName << endl;	
 		pay(clientPtr, orderName, price);
-}
+} 
 
 void restaurantMenu(Client* clientPtr)
 {
@@ -440,11 +445,14 @@ void restaurantMenu(Client* clientPtr)
 				cout << "Goodbye" << endl;
 				break;
 		}
-		if((*clientPtr).hasMembership == true) {
-			price = price * 0.75;
+		if(foodName != "") {
+			if((*clientPtr).hasMembership == true) {
+				price = price * 0.75;
+			}
+			cout << "You have purchased " << foodName;
+			pay(clientPtr, foodName, price);
 		}
-		cout << "You have purchased " << foodName;
-		pay(clientPtr, foodName, price);
+		
 
 	}while(restaurantOption > 6 || restaurantOption < 1);
 
@@ -501,21 +509,30 @@ void waterParkMenu(Client* clientPtr)
 	    		break;
 
 	    	case 2:
-	    		agreement = askAboutAgreement(12, "Sauna");
-	    		if(agreement == true)
-	    		{
-	    			pay(clientPtr, "Sauna", 12);
-	    			cout << "You have entered Sauna" << endl;
+	    		if((*clientPtr).hasMembership == false) {
+	    			cout << "You need to have VIP membership to enter" << endl;
+				}else {
+					agreement = askAboutAgreement(12, "Sauna");
+					if(agreement == true)
+	    			{
+		    			pay(clientPtr, "Sauna", 12);
+		    			cout << "You have entered Sauna" << endl;
+					}
 				}
 	    		break;
 
 			case 3:
-				agreement = askAboutAgreement(8, "Jacuzzi");
-				if(agreement == true)
-	    		{
-	    			pay(clientPtr, "Jacuzzi", 8);
-	    			cout << "You have entered Jacuzzi Pool" << endl;
+				if((*clientPtr).hasMembership == false) {
+					cout << "You need to have VIP membership to enter" << endl;
+				}else {
+					agreement = askAboutAgreement(8, "Jacuzzi");
+					if(agreement == true)
+	    			{
+		    			pay(clientPtr, "Jacuzzi", 8);
+		    			cout << "You have entered Jacuzzi Pool" << endl;
+					}
 				}
+				
 	    		break;
 
 	    	case 4:
@@ -666,6 +683,14 @@ void vipMenu(Client* clientPtr) {
 	cout << "25% discount on food and drinks" << endl;
 	cout << "Exclusive access to the jacuzzi and sauna" << endl;
 	cout << "1 Free ride back to the hotel" << endl;
+	
+	if((*clientPtr).hasMembership == true) {
+		cout << endl;
+		cout << "You already have a VIP membership" << endl;
+		cout << endl;
+		return;
+	}
+	
 	float membershipPrice = 50.0;
 	cout << "Would you like to buy VIP membership for " << membershipPrice << " $(y,n)" << endl;
 	char membershipChoice = 'n';
@@ -688,6 +713,9 @@ void chooseActivity(Client* clientPtr)
 
 
 	do{
+		cout << endl;
+		system("pause");
+		system("cls");
 		cout << "Please choose a activity " << endl;
 		cout << "[1] - Order food" << endl;
 		cout << "[2] - Go to water park" << endl;
